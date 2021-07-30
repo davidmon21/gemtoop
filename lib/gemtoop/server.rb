@@ -33,12 +33,14 @@ module Gemtoop
             pieces = params["fullurl"].split('/')
             baseuri = pieces[0]
             if pieces.length > 1
-                path = pieces[1..-1]
+                path = pieces[1..-1].join('/')
             else
                 path = '/'
             end
+            puts path
+            puts baseuri
             content = Gemtoop::GemtoopController.grab_gemsite(baseuri,path,1965)
-            @page = content[:data]
+            @page = Gemtoop::GemtoopController.htmlify content[:data]
             erb :index
         end
         get '/' do
