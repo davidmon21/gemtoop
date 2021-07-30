@@ -1,5 +1,5 @@
 require 'yaml'
-require 'gemirbi'
+require 'geminiclient'
 
 module Gemtoop
     class GemtoopController
@@ -17,53 +17,6 @@ module Gemtoop
             end
         end
 
-        def self.verify_function(uri, cert)
-            puts "verify function"
-            puts cert.public_key.to_s
-            puts cert.not_before
-            puts cert.not_after
-            return true
-        end
-        
-
-        def self.grab_gemsite(uri, path, port)
-            status,gemc,socket = self._connect(uri, port)
-            if status
-                if path == '/'
-                    path = File.join(uri,path)
-                end
-                return self._grab(path,gemc, socket)
-            else
-                return {"data": "connection failed"}
-            end
-        end
-
-        def self._connect(uri,port)
-            gemc = Gemini::GeminiClient.new :verify_function, tofu_path='./tofudb.yaml'
-            status, socket = gemc.establish_connection( uri.chomp('/'), port )
-            return status,gemc,socket
-        end
-
-        def self._grab( fulluri,gemc, socket)
-            content = {}
-            content[:header], content[:data] = gemc.send_request("#{fulluri}", socket)
-            check = content[:header].split(' ')
-            status = check[0].to_i
-            data = check[1]
-            puts fulluri
-            case status
-            when 20..29
-                return content
-            when 30..31
-                return self._grab(data,gemc, socket)
-            else
-                puts content[:data]
-                puts content[:header]
-                content[:data] = "ERROR"
-            end
-            return content
-        end
-
         def self.htmlify(data)
             new_data = ""
             for line in data
@@ -78,8 +31,9 @@ module Gemtoop
                     line.sub!("#","<h1>")
                     line+="</h1><br>"
                 elsif line.start_with?("=>")
-                    pass
+                    nil
                 elsif line.start_with?("*")
+                    nil
                 end
                 new_data+=line
             end
