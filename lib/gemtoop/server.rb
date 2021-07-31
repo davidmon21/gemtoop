@@ -40,7 +40,7 @@ module Gemtoop
             puts path
             puts baseuri
             content = Gemini::GeminiClient.new(tofu_path='./tofudb.yaml').grab_gemsite(baseuri,path,1965)
-            @page = Gemtoop::GemtoopController.htmlify content[:data]
+            @page = Gemtoop::GemtoopController.htmlify content[:data],params["fullurl"]
             erb :index
         end
         get '/' do
