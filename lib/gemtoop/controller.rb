@@ -41,16 +41,16 @@ module Gemtoop
                     end
                     if address.start_with?("gemini://")
                         address.sub!("gemini://","")
-                        link="/grab_site?fullurl=#{address}"
+                        link= "/grab_site?fullurl=#{address}"
                     elsif address.start_with?('https://') || 
                         address.start_with?('http://') ||
                         address.start_with?('ftp://') ||
                         address.start_with?('gopher://')
                         link=address
                     elsif address.start_with?('/')
-                        link="/grab_site?fullurl=#{uri.split('/')[0]}/#{address}"
+                        link="/grab_site?fullurl=#{uri.split('/')[0]}/#{address}".gsub(/\/+/,"/")
                     else
-                        link="/grab_site?fullurl=#{uri}/#{address}"
+                        link="/grab_site?fullurl=#{uri}/#{address}".gsub(/\/+/,"/")
                     end
                     line="<a href='#{link}'>#{text}</a><br>"
                 elsif line.start_with?("*")
