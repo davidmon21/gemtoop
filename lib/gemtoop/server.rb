@@ -37,9 +37,17 @@ module Gemtoop
             else
                 path = '/'
             end
+            more = baseuri.split(':')
+            if more.length > 1
+                port = more[1].to_i
+                baseuri = more[0]
+            else
+                port = 1965
+            end
             puts path
             puts baseuri
-            content = Gemini::GeminiClient.new(tofu_path='./tofudb.yaml').grab_gemsite(baseuri,path,1965)
+            puts port
+            content = Gemini::GeminiClient.new(tofu_path='./tofudb.yaml').grab_gemsite(baseuri,path,port)
             @page = Gemtoop::GemtoopController.htmlify content[:data],params["fullurl"]
             #@raw = content[:data]
             erb :index
